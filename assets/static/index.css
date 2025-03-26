@@ -1,6 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Mona+Sans:ital,wght@0,200..900;1,200..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Mona+Sans:ital,wght@0,200..900;1,200..900&display=swap");
 
 :root {
 	--bg-primary: #1a1b26;
@@ -285,9 +283,8 @@ footer * {
 	color: var(--text-primary) !important;
 }
 
-footer p {
+footer a {
 	font-size: 0.875rem;
-	cursor: default;
 }
 
 hr {
@@ -298,10 +295,6 @@ hr {
 	padding: 0;
 	width: 75%;
 	margin: 2em auto;
-}
-
-.si-github {
-	font-size: 1.75rem;
 }
 
 .sorted-list {
@@ -355,6 +348,7 @@ hr {
 
 #customSeparator {
 	max-height: 2ch;
+	margin: 0 !important;
 }
 
 ::placeholder {
@@ -483,11 +477,20 @@ hr {
 	justify-content: center;
 }
 
+#builtWith a {
+	text-decoration: none;
+	display: inline-flex;
+}
+
 #builtWith>div {
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	gap: 0.5rem;
+}
+
+#github {
+	font-size: 1.75rem;
 }
 
 .footer-icon {
@@ -497,8 +500,8 @@ hr {
 }
 
 .footer-icon:hover {
-	transform: scale(1.1);
-	filter: brightness(1.1);
+	transform: scale(1.2);
+	filter: brightness(1.2);
 }
 
 /* Index toggle styles */

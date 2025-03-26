@@ -269,6 +269,7 @@ const tooltipButtons = [
 	{ id: 'github', text: 'Source code on GitHub', direction: 'top' },
 	{ id: 'googlefonts', text: 'Google Fonts', direction: 'top' },
 	{ id: 'tabler', text: 'Tabler', direction: 'top' },
+	{ id: 'vite', text: 'Vite', direction: 'top' },
 	{ id: 'simpleicons', text: 'Simple Icons', direction: 'top' },
 ];
 

@@ -659,3 +659,14 @@ hr {
 	display: block;
 	/* Show when toggle is active */
 }
+
+#resetList {
+	background-color: var(--bg-button);
+	aspect-ratio: 1/1;
+	height: 2rem;
+	transition: filter 0.2s;
+}
+
+#resetList:hover {
+	filter: brightness(110%);
+}

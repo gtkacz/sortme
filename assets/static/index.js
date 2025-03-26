@@ -12,7 +12,9 @@ class ListSorter {
 		this.clearUrlBtn = document.getElementById("clearUrlBtn");
 		this.toast = document.getElementById("toast");
 		this.showIndices = document.getElementById('showIndices');
+		this.resetListBtn = document.getElementById("resetList");
 
+		this.resetListBtn.addEventListener("click", () => this.resetList());
 		this.showIndices.addEventListener('change', () => this.toggleIndices());
 
 		this.items = [];
@@ -81,8 +83,11 @@ class ListSorter {
 			.map(
 				(item, index) => `
 				<div class="list-item" draggable="true">
-					<div class="checkbox-wrapper-30">
-						<!-- checkbox elements -->
+					<div class="checkbox-wrapper">
+					<label class="checkbox">
+						<input type="checkbox">
+						<svg><use xlink:href="#checkbox-svg"></use></svg>
+					</label>
 					</div>
 					<span>${item}</span>
 					<span class="item-index">#${index + 1}</span>
@@ -115,17 +120,17 @@ class ListSorter {
 
 	updateItemsOrder() {
 		const items = [...this.sortedList.querySelectorAll(".list-item")];
-		this.items = items.map(item => 
-		  item.querySelector("span:not(.checkbox):not(.item-index)").textContent
+		this.items = items.map(item =>
+			item.querySelector("span:not(.checkbox):not(.item-index)").textContent
 		);
-		
+
 		// Update indices with #
 		items.forEach((item, index) => {
-		  item.querySelector(".item-index").textContent = `#${index + 1}`;
+			item.querySelector(".item-index").textContent = `#${index + 1}`;
 		});
-		
+
 		this.updateURLState();
-	  }
+	}
 
 	toggleSelectAll() {
 		const checkboxes = this.sortedList.querySelectorAll(
@@ -223,6 +228,17 @@ class ListSorter {
 	toggleIndices() {
 		this.sortedList.classList.toggle('show-indices', this.showIndices.checked);
 	}
+
+	resetList() {
+		const text = this.input.value.trim();
+		const separator = this.detectSeparator(text);
+		this.items = text
+			.split(separator)
+			.map((item) => item.trim())
+			.filter((item) => item);
+		this.renderList();
+		this.updateURLState();
+	}
 }
 
 const listSorter = new ListSorter();
@@ -252,7 +268,8 @@ const tooltipButtons = [
 	{ id: 'copySelected', text: 'Copy selected items to clipboard' },
 	{ id: 'deleteSelected', text: 'Delete selected items' },
 	{ id: 'shareBtn', text: 'Share current list' },
-	{ id: 'clearUrlBtn', text: 'Clear current list and URL parameters' }
+	{ id: 'clearUrlBtn', text: 'Clear current list and URL parameters' },
+	{ id: 'resetList', text: 'Reset the list to as it was at the moment of input' }
 ];
 
 tooltipButtons.forEach(btn => {

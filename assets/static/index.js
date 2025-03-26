@@ -264,7 +264,7 @@ const tooltipButtons = [
 	{ id: 'deleteSelected', text: 'Delete selected items', direction: 'top' },
 	{ id: 'shareBtn', text: 'Share link to current list', direction: 'top' },
 	{ id: 'resetList', text: 'Reset the list to as it was at the moment of input', direction: 'right' },
-	{ id: 'clearUrlBtn', text: 'Clear current list and URL parameters', direction: 'top' },
+	{ id: 'clearUrlBtn', text: 'Clear all data', direction: 'top' },
 	{ id: 'toggleIndices', text: 'Show indices', direction: 'top' },
 	{ id: 'github', text: 'Source code on GitHub', direction: 'top' },
 	{ id: 'googlefonts', text: 'Google Fonts', direction: 'top' },
@@ -335,3 +335,169 @@ document.getElementById('separator-input').addEventListener('keyup', (e) => {
 
 // Initialize separators
 updateSeparatorsDisplay();
+
+// Select the wave text element
+const waveText = document.querySelector('.wave-text');
+
+// Add event listeners for mouseenter only
+waveText.addEventListener('mouseenter', () => {
+  // Only start if not already animating
+  if (!animationInterval) {
+    startSortingAnimation();
+  }
+});
+
+let animationInterval;
+let sortingSteps = [];
+let currentStepIndex = 0;
+let pauseTimer = null;
+const originalText = 'sort.me';
+const animationSpeed = 300; // ms between each step
+const pauseDelay = 5000; // 5 second pause at the end of sorting
+
+function startSortingAnimation() {
+  // If animation is already running, don't start a new one
+  if (animationInterval) return;
+  
+  // Generate sorting steps
+  generateSortingSteps();
+  
+  // Reset index
+  currentStepIndex = 0;
+  
+  let isPaused = false;
+  
+  // Start the animation interval
+  animationInterval = setInterval(() => {
+    // If we're in pause state, don't do anything
+    if (isPaused) return;
+    
+    // Check if we've reached the pause step
+    if (sortingSteps[currentStepIndex] === 'PAUSE') {
+      // Stay on the previous step (sorted text)
+      isPaused = true;
+      
+      // Schedule the end of the pause
+      pauseTimer = setTimeout(() => {
+        isPaused = false;
+        currentStepIndex++; // Move to the next step after pause
+        
+        // If this is the last step (original text), complete one full animation cycle
+        if (currentStepIndex >= sortingSteps.length - 1) {
+          // Show the original text
+          setTitleText(originalText);
+          
+          // Stop the animation after showing the original text 
+          setTimeout(() => {
+            clearInterval(animationInterval);
+            animationInterval = null;
+          }, animationSpeed);
+        }
+      }, pauseDelay);
+      
+      return;
+    }
+    
+    // Set the text to the current step
+    setTitleText(sortingSteps[currentStepIndex]);
+    
+    // Move to the next step
+    currentStepIndex++;
+    
+    // If we've gone through all steps, stop the animation
+    if (currentStepIndex >= sortingSteps.length) {
+      clearInterval(animationInterval);
+      animationInterval = null;
+    }
+  }, animationSpeed);
+}
+
+function stopSortingAnimation() {
+  // Clear the animation interval
+  clearInterval(animationInterval);
+  animationInterval = null;
+  
+  // Clear any active pause timers
+  clearTimeout(pauseTimer);
+  
+  // Reset text to original
+  setTitleText(originalText);
+}
+
+function generateSortingSteps() {
+  sortingSteps = [];
+  
+  // Start with the original text
+  let currentText = originalText;
+  sortingSteps.push(currentText);
+  
+  // Generate intermediate sorting steps (sorting two letters at a time)
+  let chars = currentText.split('');
+  
+  // Implement bubble sort with modifications to sort two at a time
+  let sorted = false;
+  while (!sorted) {
+    sorted = true;
+    
+    for (let i = 0; i < chars.length - 1; i += 2) {
+      // Check if the next two characters need to be swapped
+      if (i + 1 < chars.length && chars[i] > chars[i + 1]) {
+        // Swap the characters
+        [chars[i], chars[i + 1]] = [chars[i + 1], chars[i]];
+        sorted = false;
+        
+        // Create a new step and add it to the steps
+        let newStep = chars.join('');
+        sortingSteps.push(newStep);
+      }
+    }
+    
+    for (let i = 1; i < chars.length - 1; i += 2) {
+      // Check if the next two characters need to be swapped
+      if (i + 1 < chars.length && chars[i] > chars[i + 1]) {
+        // Swap the characters
+        [chars[i], chars[i + 1]] = [chars[i + 1], chars[i]];
+        sorted = false;
+        
+        // Create a new step and add it to the steps
+        let newStep = chars.join('');
+        sortingSteps.push(newStep);
+      }
+    }
+  }
+  
+  // Add the fully sorted text
+  let sortedText = [...originalText].sort().join('');
+  if (sortingSteps[sortingSteps.length - 1] !== sortedText) {
+    sortingSteps.push(sortedText);
+  }
+  
+  // Add a pause step (we'll repeat the sorted text for the pause duration)
+  sortingSteps.push('PAUSE');
+  
+  // Add the original text back at the end
+  sortingSteps.push(originalText);
+}
+
+function setTitleText(text) {
+  // Clear current spans
+  waveText.innerHTML = '';
+  
+  // Create new spans for each character
+  text.split('').forEach(char => {
+    const span = document.createElement('span');
+    span.textContent = char;
+    span.style.animation = 'wave 2s ease-in-out infinite';
+    waveText.appendChild(span);
+  });
+  
+  // Set animation delays for each span to maintain the wave effect
+  Array.from(waveText.children).forEach((span, index) => {
+    span.style.animationDelay = `${index * 0.2}s`;
+  });
+}
+
+// Initialize with original text structure when page loads
+document.addEventListener('DOMContentLoaded', () => {
+  setTitleText(originalText);
+});

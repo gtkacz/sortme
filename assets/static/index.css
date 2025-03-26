@@ -85,7 +85,7 @@ body {
 	}
 
 	50% {
-		transform: translateY(-10px);
+		transform: translateY(-5px);
 	}
 }
 
@@ -251,7 +251,7 @@ button {
 
 #clearUrlBtn {
 	cursor: pointer;
-	background-color: var(--warning);
+	background-color: var(--error);
 	aspect-ratio: 1/1;
 	border-radius: 50%;
 	display: flex;
@@ -721,4 +721,8 @@ hr {
 	align-items: center;
 	justify-content: center;
 	gap: 0.5rem;
+}
+
+.copyright {
+	text-align: center;
 }

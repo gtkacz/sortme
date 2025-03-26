@@ -3,7 +3,7 @@ document.getElementById("currentYear").innerHTML = new Date().getFullYear();
 class ListSorter {
 	constructor() {
 		this.input = document.getElementById("input");
-		this.customSeparator = document.getElementById("customSeparator");
+		this.customSeparator = document.getElementById("toggleSeparators");
 		this.sortedList = document.getElementById("sortedList");
 		this.selectAllBtn = document.getElementById("selectAll");
 		this.copySelectedBtn = document.getElementById("copySelected");
@@ -264,36 +264,79 @@ window.addEventListener("click", (event) => {
 
 // Add tooltips to all buttons
 const tooltipButtons = [
-    { id: 'selectAll', text: 'Toggle selection of all items', direction: 'top' },
-    { id: 'copySelected', text: 'Copy selected items to clipboard', direction: 'top' },
-    { id: 'deleteSelected', text: 'Delete selected items', direction: 'top' },
-    { id: 'shareBtn', text: 'Share current list', direction: 'top' },
-    { id: 'clearUrlBtn', text: 'Clear current list and URL parameters', direction: 'top' },
-    { id: 'resetList', text: 'Reset the list to as it was at the moment of input', direction: 'top' }
+	{ id: 'selectAll', text: 'Toggle selection of all items', direction: 'top' },
+	{ id: 'copySelected', text: 'Copy selected items to clipboard', direction: 'top' },
+	{ id: 'deleteSelected', text: 'Delete selected items', direction: 'top' },
+	{ id: 'shareBtn', text: 'Share link to current list', direction: 'top' },
+	{ id: 'resetList', text: 'Reset the list to as it was at the moment of input', direction: 'top' },
+	{ id: 'clearUrlBtn', text: 'Clear current list and URL parameters', direction: 'top' },
+	{ id: 'toggleIndices', text: 'Show indices', direction: 'top' },
+	{ id: 'github', text: 'Source code on GitHub', direction: 'top' },
+	{ id: 'googlefonts', text: 'Google Fonts', direction: 'top' },
+	{ id: 'tabler', text: 'Tabler', direction: 'top' },
+	{ id: 'simpleicons', text: 'Simple Icons', direction: 'top' },
 ];
 
 tooltipButtons.forEach(btn => {
-    const element = document.getElementById(btn.id);
-    const tooltip = document.createElement('div');
-    tooltip.className = 'control-tooltip';
-    tooltip.textContent = btn.text;
-    tooltip.style.cssText = `
-        font-family: "Space Grotesk", sans-serif;
-        display: none;
-        position: absolute;
-        background-color: transparent;
-        backdrop-filter: blur(5px);
-        border: 1px solid #66c0f4;
-        color: #66c0f4;
-        padding: 1rem;
-        border-radius: 0.5rem;
-        z-index: 100;
-        pointer-events: none;
-        ${btn.direction === 'top' ? 'bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);' : ''}
-        ${btn.direction === 'left' ? 'right: calc(100% + 8px); top: 50%; transform: translateY(-50%);' : ''}
-    `;
-    element.appendChild(tooltip);
-    
-    element.addEventListener('mouseenter', () => tooltip.style.display = 'block');
-    element.addEventListener('mouseleave', () => tooltip.style.display = 'none');
+	const element = document.getElementById(btn.id);
+	const tooltip = document.createElement('div');
+	tooltip.className = 'control-tooltip';
+	tooltip.textContent = btn.text;
+	tooltip.style.cssText = `
+		display: none;
+		position: absolute;
+		${btn.direction === 'top' ? 'bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);' : ''}
+		${btn.direction === 'left' ? 'right: calc(100% + 8px); top: 50%; transform: translateY(-50%);' : ''}
+		`;
+	element.appendChild(tooltip);
+	element.addEventListener('mouseenter', () => tooltip.style.display = 'block');
+	element.addEventListener('mouseleave', () => tooltip.style.display = 'none');
 });
+
+const separators = ['\n', ';', ','];
+let editingSeparators = false;
+
+document.getElementById('toggleSeparators').addEventListener('click', () => {
+	editingSeparators = !editingSeparators;
+	document.getElementById('separator-chips-container').style.display =
+		editingSeparators ? 'flex' : 'none';
+	document.getElementById('separator-input-wrapper').style.display =
+		editingSeparators ? 'flex' : 'none';
+	updateSeparatorsDisplay();
+});
+
+function updateSeparatorsDisplay() {
+	const container = document.getElementById('separator-chips-container');
+	container.innerHTML = '';
+	separators.forEach(sep => {
+		const chip = document.createElement('div');
+		chip.className = 'separator-chip';
+		chip.innerHTML = `
+		<span>${sep === '\n' ? '\\n' : sep}</span>
+		<button type="button" class="delete-separator">&times;</button>
+	  `;
+		chip.querySelector('button').addEventListener('click', () => {
+			separators.splice(separators.indexOf(sep), 1);
+			updateSeparatorsDisplay();
+		});
+		container.appendChild(chip);
+	});
+}
+
+document.getElementById('save-separators').addEventListener('click', () => {
+	const input = document.getElementById('separator-input');
+	if (input.value.trim()) {
+		separators.push(input.value.trim());
+		input.value = '';
+		updateSeparatorsDisplay();
+	}
+});
+
+document.getElementById('separator-input').addEventListener('keyup', (e) => {
+	if (e.key === 'Enter' || e.key === ',') {
+		document.getElementById('save-separators').click();
+	}
+});
+
+// Initialize separators
+updateSeparatorsDisplay();

@@ -38,8 +38,15 @@
 
         <div class="input-group">
             <div class="controls">
-                <div class="separator-group">
-                    <input type="text" id="customSeparator" placeholder="Custom separator" />
+                <div class="separator-container">
+                    <button type="button" class="icon-button" id="toggleSeparators">
+                        <i class="ti ti-separator-vertical"></i>
+                    </button>
+                    <div class="separator-chips" id="separator-chips-container"></div>
+                    <div class="separator-input-container" id="separator-input-wrapper" style="display: none;">
+                        <input type="text" id="separator-input" placeholder="Add separator...">
+                        <button type="button" id="save-separators">Add</button>
+                    </div>
                 </div>
                 <div class="is-control disabled" id="clearUrlBtn">
                     <i class="ti ti-x"></i>
@@ -49,20 +56,17 @@
         </div>
 
         <div class="controls">
-            <div>
+            <div class="flex-container">
                 <button id="selectAll" class="disabled">Select All</button>
                 <button id="resetList">
                     <i class="ti ti-arrow-back-up"></i>
                 </button>
             </div>
-            <div class="index-toggle-group">
-                <div class="toggle-switch-wrapper">
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="showIndices">
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                <span class="toggle-label">Show indices</span>
+            <div class="toggle-switch-wrapper" id="toggleIndices">
+                <label class="toggle-switch">
+                    <input type="checkbox" id="showIndices">
+                    <span class="slider"></span>
+                </label>
             </div>
         </div>
 
@@ -81,16 +85,16 @@
         <p class="copyright">
             &copy; 2025-<span id="currentYear"></span> Gabriel Mitelman Tkacz. All rights reserved.
         </p>
-        <i class="si si-github footer-icon" title="Source code"><a href="https://github.com/gtkacz/sortme"
+        <i class="si si-github footer-icon" title="Source code" id="github"><a href="https://github.com/gtkacz/sortme"
                 target="_blank"></a></i>
         <div id="builtWith">
             <span>Built with:</span>
             <div>
-                <i class="si si-googlefonts footer-icon" title="Google Fonts"><a
-                        href="https://developers.google.com/fonts" target="_blank"></a></i>
-                <i class="ti ti-brand-tabler footer-icon" title="Tabler"><a href="https://tabler.io/icons"
+                <i class="si si-googlefonts footer-icon" id="googlefonts"><a href="https://developers.google.com/fonts"
                         target="_blank"></a></i>
-                <i class="si si-simpleicons footer-icon" title="Simple Icons"><a href="https://simpleicons.org/"
+                <i class="ti ti-brand-tabler footer-icon" id="tabler"><a href="https://tabler.io/icons"
+                        target="_blank"></a></i>
+                <i class="si si-simpleicons footer-icon" id="simpleicons"><a href="https://simpleicons.org/"
                         target="_blank"></a></i>
             </div>
         </div>
@@ -115,7 +119,7 @@
     <!-- SVG Symbol for checkbox -->
     <svg xmlns="http://www.w3.org/2000/svg" style="display: none">
         <symbol id="checkbox-svg" viewBox="0 0 22 22">
-            <path fill="none" stroke="currentColor"
+            <path fill="none" stroke="66c0f4"
                 d="M5.5,11.3L9,14.8L20.2,3.3l0,0c-0.5-1-1.5-1.8-2.7-1.8h-13c-1.7,0-3,1.3-3,3v13c0,1.7,1.3,3,3,3h13 c1.7,0,3-1.3,3-3v-13c0-0.4-0.1-0.8-0.3-1.2" />
         </symbol>
     </svg>

@@ -26,6 +26,16 @@ jobs:
 
       - name: Build
         run: npm run build
+        
+      - name: Fix asset paths
+        run: |
+          cd dist
+          # Move static assets to correct folder structure if needed
+          if [ -d "assets" ]; then
+            cp -r assets/* .
+          fi
+          # Update HTML references if necessary
+          find . -type f -name "*.html" -exec sed -i 's|/assets/|./assets/|g' {} \;
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4

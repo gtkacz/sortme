@@ -207,7 +207,7 @@ class ListSorter {
 			.map((item) => item.querySelector("span:not(.checkbox)").textContent);
 		if (selectedItems.length === 0) return;
 		navigator.clipboard
-			.writeText(selectedItems.join("\n"))
+			.writeText(selectedItems.join(","))
 			.then(() => this.showToast("Copied to clipboard!"));
 	}
 

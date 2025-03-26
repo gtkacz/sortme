@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sort.me</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
+
+        :root {
+            --bg-primary: #1a1b26;
+            --bg-secondary: #1f2335;
+            --bg-button: #7aa2f7;
+            --text-primary: #b4f9f8;
+            --text-secondary: #bb9af7;
+            --text-placeholder: #394b70;
+            --accent: #bb9af7;
+            --accent-pink: #ff34b3;
+            --error: #c53b53;
+            --success: #c3e88d;
+            --disabled: #607D8B;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Space Grotesk", sans-serif !important;
+            font-style: normal;
+            font-optical-sizing: auto;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .input-group {
+            margin-bottom: 2rem;
+        }
+
+        button {
+            font-family: "Lexend", sans-serif !important;
+        }
+
+        textarea, input {
+            font-family: "Space Grotesk", sans-serif !important;
+        }
+
+        textarea, input {
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--text-secondary);
+            border-radius: 0.5rem;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        textarea:focus, input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .separator-group {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .separator-group input {
+            width: 100px;
+            margin-bottom: 0;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        button {
+            padding: 0.5rem 1rem;
+            background-color: var(--bg-button);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: opacity 0.2s;
+            text-transform: uppercase;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        button.danger {
+            background-color: var(--error);
+        }
+
+        .sorted-list {
+            background-color: var(--bg-secondary);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            min-height: 100px;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            background-color: var(--bg-primary);
+            margin-bottom: 0.5rem;
+            border-radius: 0.25rem;
+            cursor: move;
+            user-select: none;
+        }
+
+        .list-item.dragging {
+            opacity: 0.5;
+        }
+
+        .list-item input[type="checkbox"] {
+            width: auto;
+            margin-right: 1rem;
+            margin-bottom: 0;
+            cursor: pointer;
+        }
+
+        .list-item button {
+            margin-left: auto;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem;
+            background-color: var(--success);
+            color: var(--bg-primary);
+            border-radius: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        #customSeparator {
+            max-height: 2ch;
+        }
+
+        ::placeholder {
+            color: var(--text-placeholder);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>sort.me</h1>
+        
+        <div class="input-group">
+            <textarea id="input" placeholder="Enter your items (separated by newline, comma, or semicolon)"></textarea>
+            <div class="separator-group">
+                <label for="customSeparator">Custom separator:</label>
+                <input type="text" id="customSeparator" placeholder="Optional">
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="selectAll">Select All</button>
+            <button id="copySelected">Copy Selected</button>
+            <button id="deleteSelected" class="danger">Delete Selected</button>
+        </div>
+
+        <div class="sorted-list" id="sortedList"></div>
+    </div>
+
+    <div class="toast" id="toast">Copied to clipboard!</div>
+
+    <script>
+        class ListSorter {
+            constructor() {
+                this.input = document.getElementById('input');
+                this.customSeparator = document.getElementById('customSeparator');
+                this.sortedList = document.getElementById('sortedList');
+                this.selectAllBtn = document.getElementById('selectAll');
+                this.copySelectedBtn = document.getElementById('copySelected');
+                this.deleteSelectedBtn = document.getElementById('deleteSelected');
+                this.toast = document.getElementById('toast');
+                
+                this.items = [];
+                this.setupEventListeners();
+            }
+
+            setupEventListeners() {
+                this.input.addEventListener('input', () => this.processInput());
+                this.customSeparator.addEventListener('input', () => this.processInput());
+                this.selectAllBtn.addEventListener('click', () => this.toggleSelectAll());
+                this.copySelectedBtn.addEventListener('click', () => this.copySelected());
+                this.deleteSelectedBtn.addEventListener('click', () => this.deleteSelected());
+
+                // Drag and drop
+                this.sortedList.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    const draggingItem = this.sortedList.querySelector('.dragging');
+                    const siblings = [...this.sortedList.querySelectorAll('.list-item:not(.dragging)')];
+                    const nextSibling = siblings.find(sibling => {
+                        const box = sibling.getBoundingClientRect();
+                        return e.clientY <= box.top + box.height / 2;
+                    });
+                    
+                    if (nextSibling) {
+                        this.sortedList.insertBefore(draggingItem, nextSibling);
+                    } else {
+                        this.sortedList.appendChild(draggingItem);
+                    }
+                });
+            }
+
+            detectSeparator(text) {
+                if (this.customSeparator.value) return this.customSeparator.value;
+                if (text.includes('\n')) return '\n';
+                if (text.includes(',')) return ',';
+                if (text.includes(';')) return ';';
+                return '\n';
+            }
+
+            processInput() {
+                const text = this.input.value.trim();
+                const separator = this.detectSeparator(text);
+                this.items = text
+                    .split(separator)
+                    .map(item => item.trim())
+                    .filter(item => item)
+                    .sort((a, b) => a.localeCompare(b));
+                this.renderList();
+            }
+
+            renderList() {
+                this.sortedList.innerHTML = this.items
+                    .map((item, index) => `
+                        <div class="list-item" draggable="true" data-index="${index}">
+                            <input type="checkbox">
+                            <span>${item}</span>
+                            <button onclick="listSorter.removeItem(${index})" class="danger">Remove</button>
+                        </div>
+                    `)
+                    .join('');
+
+                this.sortedList.querySelectorAll('.list-item').forEach(item => {
+                    item.addEventListener('dragstart', () => item.classList.add('dragging'));
+                    item.addEventListener('dragend', () => {
+                        item.classList.remove('dragging');
+                        this.updateItemsOrder();
+                    });
+                });
+            }
+
+            removeItem(index) {
+                this.items.splice(index, 1);
+                this.renderList();
+            }
+
+            updateItemsOrder() {
+                this.items = [...this.sortedList.querySelectorAll('.list-item')].map(
+                    item => item.querySelector('span').textContent
+                );
+            }
+
+            toggleSelectAll() {
+                const checkboxes = this.sortedList.querySelectorAll('input[type="checkbox"]');
+                const allChecked = [...checkboxes].every(cb => cb.checked);
+                checkboxes.forEach(cb => cb.checked = !allChecked);
+            }
+
+            copySelected() {
+                const selectedItems = [...this.sortedList.querySelectorAll('.list-item')]
+                    .filter(item => item.querySelector('input[type="checkbox"]').checked)
+                    .map(item => item.querySelector('span').textContent);
+
+                if (selectedItems.length === 0) return;
+
+                navigator.clipboard.writeText(selectedItems.join('\n'))
+                    .then(() => this.showToast());
+            }
+
+            deleteSelected() {
+                const newItems = [...this.sortedList.querySelectorAll('.list-item')]
+                    .filter(item => !item.querySelector('input[type="checkbox"]').checked)
+                    .map(item => item.querySelector('span').textContent);
+                
+                this.items = newItems;
+                this.renderList();
+            }
+
+            showToast() {
+                this.toast.classList.add('show');
+                setTimeout(() => this.toast.classList.remove('show'), 2000);
+            }
+        }
+
+        const listSorter = new ListSorter();
+    </script>
+</body>
+</html>

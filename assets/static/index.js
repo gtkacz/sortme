@@ -14,15 +14,14 @@ class ListSorter {
 		this.showIndices = document.getElementById('showIndices');
 		this.resetListBtn = document.getElementById("resetList");
 
-		this.resetListBtn.addEventListener("click", () => this.resetList());
-		this.showIndices.addEventListener('change', () => this.toggleIndices());
-
 		this.items = [];
 		this.setupEventListeners();
 		this.loadStateFromURL();
 	}
 
 	setupEventListeners() {
+		this.resetListBtn.addEventListener("click", () => this.resetList());
+		this.showIndices.addEventListener('change', () => this.toggleIndices());
 		this.input.addEventListener("input", () => this.processInput());
 		this.customSeparator.addEventListener("input", () => this.processInput());
 		this.selectAllBtn.addEventListener("click", () => {
@@ -153,6 +152,8 @@ class ListSorter {
 
 		this.selectAllBtn.textContent = allChecked ? "Unselect All" : "Select All";
 		this.selectAllBtn.classList.toggle("disabled", this.items.length === 0);
+		
+		this.resetListBtn.classList.toggle("disabled", this.items.length === 0);
 
 		this.shareBtn.disabled = !(
 			this.items.length > 0 || this.customSeparator.value
@@ -230,12 +231,7 @@ class ListSorter {
 	}
 
 	resetList() {
-		const text = this.input.value.trim();
-		const separator = this.detectSeparator(text);
-		this.items = text
-			.split(separator)
-			.map((item) => item.trim())
-			.filter((item) => item);
+		this.processInput();
 		this.renderList();
 		this.updateURLState();
 	}
@@ -264,11 +260,10 @@ window.addEventListener("click", (event) => {
 
 // Add tooltips to all buttons
 const tooltipButtons = [
-	{ id: 'selectAll', text: 'Toggle selection of all items', direction: 'top' },
 	{ id: 'copySelected', text: 'Copy selected items to clipboard', direction: 'top' },
 	{ id: 'deleteSelected', text: 'Delete selected items', direction: 'top' },
 	{ id: 'shareBtn', text: 'Share link to current list', direction: 'top' },
-	{ id: 'resetList', text: 'Reset the list to as it was at the moment of input', direction: 'top' },
+	{ id: 'resetList', text: 'Reset the list to as it was at the moment of input', direction: 'right' },
 	{ id: 'clearUrlBtn', text: 'Clear current list and URL parameters', direction: 'top' },
 	{ id: 'toggleIndices', text: 'Show indices', direction: 'top' },
 	{ id: 'github', text: 'Source code on GitHub', direction: 'top' },

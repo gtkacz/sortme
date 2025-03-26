@@ -1,716 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>sort.me</title>
-    <link rel="icon" type="image/x-icon" href="/assets/favico.svg" />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"
-    />
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap");
-      @import url("https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap");
-      @import url("https://fonts.googleapis.com/css2?family=Mona+Sans:ital,wght@0,200..900;1,200..900&display=swap");
+    <link rel="icon" type="image/x-icon" href="/assets/img/favico.svg" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/simple-icons-font@v14/font/simple-icons.min.css" type="text/css">
+    <link rel="stylesheet" href="assets/static/index.css">
+    <script src="assets/static/index.js" defer></script>
+</head>
 
-      :root {
-        --bg-primary: #1a1b26;
-        --bg-secondary: #1f2335;
-        --bg-tertiary: #2a475e;
-        --bg-button: #4299e1;
-        --text-primary: #c7d5e0;
-        --text-secondary: #66c0f4;
-        --text-active: #bb9af7;
-        --text-placeholder: #394b70;
-        --accent: #2489ff;
-        --error: #c53b53;
-        --success: #c3e88d;
-        --disabled: #607d8b;
-      }
-
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: "Space Grotesk", sans-serif !important;
-        font-style: normal;
-        font-optical-sizing: auto;
-        background-color: var(--bg-primary);
-        color: var(--text-primary);
-        min-height: 100vh;
-        padding: 2rem;
-        line-height: 1.6;
-      }
-
-      #header {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 0.75rem;
-        margin-bottom: 2rem;
-      }
-
-      .wave-text span {
-        display: inline-block;
-        font-size: 4rem;
-        animation: wave 2s ease-in-out infinite;
-      }
-
-      .wave-text span:nth-child(1) {
-        animation-delay: 0s;
-      }
-      .wave-text span:nth-child(2) {
-        animation-delay: 0.2s;
-      }
-      .wave-text span:nth-child(3) {
-        animation-delay: 0.4s;
-      }
-      .wave-text span:nth-child(4) {
-        animation-delay: 0.6s;
-      }
-      .wave-text span:nth-child(5) {
-        animation-delay: 0.8s;
-      }
-      .wave-text span:nth-child(6) {
-        animation-delay: 1s;
-      }
-      .wave-text span:nth-child(7) {
-        animation-delay: 1.2s;
-      }
-
-      @keyframes wave {
-        0%,
-        100% {
-          transform: translateY(0);
-        }
-        50% {
-          transform: translateY(-20px);
-        }
-      }
-
-      .container {
-        max-width: 800px;
-        margin: 0 auto;
-      }
-
-      h1 {
-        color: var(--text-secondary);
-        text-align: center;
-        cursor: default;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-
-      .input-group {
-        margin-bottom: 2rem;
-      }
-
-      button {
-        font-family: "Mona Sans", sans-serif !important;
-      }
-
-      textarea,
-      input {
-        font-family: "Space Grotesk", sans-serif !important;
-        transition: border-color 0.2s;
-      }
-
-      textarea,
-      input[type="text"] {
-        width: 100%;
-        padding: 1rem;
-        background-color: var(--bg-secondary);
-        border: 1px solid var(--text-secondary);
-        border-radius: 0.5rem;
-        color: var(--text-primary);
-        margin-bottom: 1rem;
-        font-size: 1rem;
-      }
-
-      textarea {
-        min-height: 150px;
-        resize: vertical;
-      }
-
-      textarea:focus,
-      input:focus {
-        outline: none;
-        border-color: var(--accent);
-      }
-
-      .separator-group {
-        display: flex;
-        gap: 1rem;
-        align-items: center;
-        margin-bottom: 1rem;
-      }
-
-      .separator-group input {
-        width: 100px;
-        margin-bottom: 0;
-      }
-
-      .controls {
-        display: flex;
-        gap: 1rem;
-        margin-bottom: 1rem;
-      }
-
-      button {
-        padding: 0.5rem 1rem;
-        background-color: var(--bg-button);
-        color: var(--text-primary);
-        border: none;
-        border-radius: 0.5rem;
-        cursor: pointer;
-        font-weight: 600;
-        transition: opacity 0.2s;
-        text-transform: uppercase;
-      }
-
-      .is-control {
-        transition: filter 0.2s;
-      }
-
-      .is-control:hover {
-        filter: brightness(125%);
-      }
-
-      .controls-bottom {
-        display: flex;
-        margin-top: 1rem;
-        gap: 1.5ch;
-        justify-content: flex-end;
-      }
-
-      .controls-bottom i {
-        font-size: 1.5rem;
-      }
-
-      #selectAll {
-        background-color: transparent !important;
-        color: var(--bg-button) !important;
-        border: 1px solid var(--bg-button) !important;
-        transition: background-color 0.2s, color 0.2s, filter 0.4s;
-      }
-
-      #selectAll:hover {
-        background-color: var(--bg-button) !important;
-        color: var(--bg-primary) !important;
-      }
-
-      #selectAll:active {
-        filter: brightness(125%);
-      }
-
-      #copySelected {
-        cursor: pointer;
-        background-color: transparent;
-        color: var(--bg-button);
-      }
-
-      #deleteSelected {
-        cursor: pointer;
-        background-color: transparent;
-        color: var(--error);
-      }
-
-      .removeItem {
-        background-color: var(--error);
-        color: var(--bg-primary);
-      }
-
-      .disabled {
-        opacity: 0.5;
-        pointer-events: none;
-        transition: opacity 0.2s;
-        cursor: not-allowed !important;
-      }
-
-      footer {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        align-items: center;
-        justify-content: center;
-        margin-top: 2rem;
-      }
-
-      footer p {
-        color: var(--text-primary);
-        font-size: 0.875rem;
-        cursor: default;
-      }
-
-      hr {
-        display: block;
-        height: 1px;
-        border: 0;
-        border-top: 1px solid var(--text-primary);
-        padding: 0;
-        width: 75%;
-        margin: 2em auto;
-      }
-
-      #github {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-
-      #github img {
-        width: 24px;
-        height: 24px;
-        margin: 0 1rem;
-        color: var(--text-primary);
-      }
-
-      .sorted-list {
-        background-color: var(--bg-secondary);
-        border-radius: 0.5rem;
-        padding: 1rem;
-        min-height: 100px;
-      }
-
-      .list-item {
-        display: flex;
-        align-items: center;
-        padding: 0.75rem;
-        background-color: var(--bg-primary);
-        margin-bottom: 0.5rem;
-        border-radius: 0.25rem;
-        cursor: move;
-        user-select: none;
-      }
-
-      .list-item.dragging {
-        opacity: 0.5;
-      }
-
-      .list-item .checkbox-wrapper-30 {
-        display: inline-flex;
-        margin-right: 1rem;
-      }
-
-      .list-item button {
-        margin-left: auto;
-        padding: 0.25rem 0.5rem;
-        font-size: 0.875rem;
-      }
-
-      .toast {
-        position: fixed;
-        bottom: 2rem;
-        right: 2rem;
-        padding: 1rem;
-        background-color: var(--success);
-        color: var(--bg-primary);
-        border-radius: 0.5rem;
-        opacity: 0;
-        transition: opacity 0.3s;
-      }
-
-      .toast.show {
-        opacity: 1;
-      }
-
-      #customSeparator {
-        max-height: 2ch;
-      }
-
-      ::placeholder {
-        color: var(--text-placeholder);
-      }
-
-      /* Custom checkbox styles */
-      .checkbox-wrapper-30 .checkbox {
-        --bg: var(--bg-secondary);
-        --brdr: var(--bg-tertiary);
-        --brdr-actv: var(--text-secondary);
-        --brdr-hovr: var(--bg-button);
-        --dur: calc((var(--size, 2) / 2) * 0.6s);
-        display: inline-block;
-        width: calc(var(--size, 1) * 22px);
-        position: relative;
-      }
-      .checkbox-wrapper-30 .checkbox:after {
-        content: "";
-        width: 100%;
-        padding-top: 100%;
-        display: block;
-      }
-      .checkbox-wrapper-30 .checkbox > * {
-        position: absolute;
-      }
-      .checkbox-wrapper-30 .checkbox input {
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        -webkit-tap-highlight-color: transparent;
-        cursor: pointer;
-        background-color: var(--bg);
-        border-radius: calc(var(--size, 1) * 4px);
-        border: calc(var(--newBrdr, var(--size, 1)) * 1px) solid;
-        color: var(--newBrdrClr, var(--brdr));
-        outline: none;
-        margin: 0;
-        padding: 0;
-        transition: all calc(var(--dur) / 3) linear;
-      }
-      .checkbox-wrapper-30 .checkbox input:hover,
-      .checkbox-wrapper-30 .checkbox input:checked {
-        --newBrdr: calc(var(--size, 1) * 2);
-      }
-      .checkbox-wrapper-30 .checkbox input:hover {
-        --newBrdrClr: var(--brdr-hovr);
-      }
-      .checkbox-wrapper-30 .checkbox input:checked {
-        --newBrdrClr: var(--brdr-actv);
-        transition-delay: calc(var(--dur) / 1.3);
-      }
-      .checkbox-wrapper-30 .checkbox input:checked + svg {
-        --dashArray: 16 93;
-        --dashOffset: 109;
-      }
-      .checkbox-wrapper-30 .checkbox svg {
-        fill: none;
-        left: 0;
-        pointer-events: none;
-        stroke: var(--stroke, var(--brdr-actv));
-        stroke-dasharray: var(--dashArray, 93);
-        stroke-dashoffset: var(--dashOffset, 94);
-        stroke-linecap: round;
-        stroke-linejoin: round;
-        stroke-width: 2px;
-        top: 0;
-        transition: stroke-dasharray var(--dur), stroke-dashoffset var(--dur);
-      }
-      .checkbox-wrapper-30 .checkbox svg,
-      .checkbox-wrapper-30 .checkbox input {
-        display: block;
-        height: 100%;
-        width: 100%;
-      }
-
-      /* Modal styles for the help popup */
-      .modal {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.5);
-      }
-      .modal-content {
-        background-color: var(--bg-secondary);
-        margin: 15% auto;
-        padding: 20px;
-        border: 1px solid var(--text-secondary);
-        width: 80%;
-        max-width: 500px;
-        border-radius: 0.5rem;
-        color: var(--text-primary);
-      }
-      .close {
-        color: var(--text-primary);
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-        cursor: pointer;
-      }
-      .close:hover,
-      .close:focus {
-        color: var(--accent);
-      }
-    </style>
-  </head>
-  <body>
+<body>
     <div class="container">
-      <div id="header">
-        <div class="wave-container">
-          <h1 class="wave-text">
-            <span>s</span>
-            <span>o</span>
-            <span>r</span>
-            <span>t</span>
-            <span>.</span>
-            <span>m</span>
-            <span>e</span>
-          </h1>
+        <div id="header">
+            <div class="wave-container">
+                <h1 class="wave-text">
+                    <span>s</span>
+                    <span>o</span>
+                    <span>r</span>
+                    <span>t</span>
+                    <span>.</span>
+                    <span>m</span>
+                    <span>e</span>
+                </h1>
+            </div>
+            <div id="helpIcon">
+                ?
+                <div id="helpTooltip">
+                    <h3>What is sort.me?</h3>
+                    <p>This tool helps you organize and manage lists. Enter items separated by commas, semicolons, or
+                        new lines. Drag to reorder, select multiple items, and share your sorted lists!</p>
+                </div>
+            </div>
         </div>
-        <div id="helpIcon">?</div>
-      </div>
 
-      <div class="input-group">
-        <div class="separator-group">
-          <input
-            type="text"
-            id="customSeparator"
-            placeholder="Custom separator"
-          />
+        <div class="input-group">
+            <div class="controls">
+                <div class="separator-group">
+                    <input type="text" id="customSeparator" placeholder="Custom separator" />
+                </div>
+                <div class="is-control disabled" id="clearUrlBtn">
+                    <i class="ti ti-x"></i>
+                </div>
+            </div>
+            <textarea id="input" placeholder="Enter your items (separated by newline, comma, or semicolon)"></textarea>
         </div>
-        <textarea
-          id="input"
-          placeholder="Enter your items (separated by newline, comma, or semicolon)"
-        ></textarea>
-      </div>
 
-      <div class="controls">
-        <button id="selectAll">Select All</button>
-      </div>
+        <div class="controls">
+            <button id="selectAll" class="disabled">Select All</button>
+            <div class="index-toggle-group">
+                <div class="toggle-switch-wrapper">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="showIndices">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <span class="toggle-label">Show indices</span>
+            </div>
+        </div>
 
-      <div class="sorted-list" id="sortedList"></div>
+        <div class="sorted-list" id="sortedList"></div>
 
-      <div class="controls-bottom">
-        <i class="ti ti-copy is-control disabled" id="copySelected"></i>
-        <i class="ti ti-trash is-control disabled" id="deleteSelected"></i>
-      </div>
+        <div class="controls-bottom">
+            <i class="ti ti-share is-control disabled" id="shareBtn"></i>
+            <i class="ti ti-copy is-control disabled" id="copySelected"></i>
+            <i class="ti ti-trash is-control disabled" id="deleteSelected"></i>
+        </div>
     </div>
 
     <hr />
 
     <footer>
-      <a href="https://github.com/gtkacz/sortme" target="_blank" id="github">
-        <img src="/assets/github.svg" alt="GitHub" class="github-logo" />
-      </a>
-      <p class="copyright">
-        &copy; 2025-<span id="currentYear"></span> Gabriel Mitelman Tkacz
-      </p>
+        <p class="copyright">
+            &copy; 2025-<span id="currentYear"></span> Gabriel Mitelman Tkacz. All rights reserved.
+        </p>
+        <i class="si si-github footer-icon" title="Source code"><a href="https://github.com/gtkacz/sortme"
+                target="_blank"></a></i>
+        <div id="builtWith">
+            <span>Built with:</span>
+            <div>
+                <i class="si si-googlefonts footer-icon" title="Google Fonts"><a
+                        href="https://developers.google.com/fonts" target="_blank"></a></i>
+                <i class="ti ti-brand-tabler footer-icon" title="Tabler"><a href="https://tabler.io/icons"
+                        target="_blank"></a></i>
+                <i class="si si-simpleicons footer-icon" title="Simple Icons"><a href="https://simpleicons.org/"
+                        target="_blank"></a></i>
+            </div>
+        </div>
     </footer>
 
     <div class="toast" id="toast">Copied to clipboard!</div>
 
     <!-- Help Modal -->
     <div id="helpModal" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>About sort.me</h2>
-        <p>
-          This site helps you sort and manage your items. Enter items into the
-          textarea, customize the separator if needed, and the list will be
-          sorted alphabetically. You can select items, copy them to the
-          clipboard, or delete selected items.
-        </p>
-      </div>
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>About sort.me</h2>
+            <p>
+                This site helps you sort and manage your items. Enter items into the
+                textarea, customize the separator if needed, and the list will be
+                sorted alphabetically. You can select items, copy them to the
+                clipboard, or delete selected items.
+            </p>
+        </div>
     </div>
 
     <!-- SVG Symbol for checkbox -->
     <svg xmlns="http://www.w3.org/2000/svg" style="display: none">
-      <symbol id="checkbox-30" viewBox="0 0 22 22">
-        <path
-          fill="none"
-          stroke="currentColor"
-          d="M5.5,11.3L9,14.8L20.2,3.3l0,0c-0.5-1-1.5-1.8-2.7-1.8h-13c-1.7,0-3,1.3-3,3v13c0,1.7,1.3,3,3,3h13 c1.7,0,3-1.3,3-3v-13c0-0.4-0.1-0.8-0.3-1.2"
-        />
-      </symbol>
+        <symbol id="checkbox-svg" viewBox="0 0 22 22">
+            <path fill="none" stroke="currentColor"
+                d="M5.5,11.3L9,14.8L20.2,3.3l0,0c-0.5-1-1.5-1.8-2.7-1.8h-13c-1.7,0-3,1.3-3,3v13c0,1.7,1.3,3,3,3h13 c1.7,0,3-1.3,3-3v-13c0-0.4-0.1-0.8-0.3-1.2" />
+        </symbol>
     </svg>
+</body>
 
-    <script>
-      document.getElementById("currentYear").innerHTML =
-        new Date().getFullYear();
-
-      class ListSorter {
-        constructor() {
-          this.input = document.getElementById("input");
-          this.customSeparator = document.getElementById("customSeparator");
-          this.sortedList = document.getElementById("sortedList");
-          this.selectAllBtn = document.getElementById("selectAll");
-          this.copySelectedBtn = document.getElementById("copySelected");
-          this.deleteSelectedBtn = document.getElementById("deleteSelected");
-          this.toast = document.getElementById("toast");
-
-          this.items = [];
-          this.setupEventListeners();
-        }
-
-        setupEventListeners() {
-          this.input.addEventListener("input", () => this.processInput());
-          this.customSeparator.addEventListener("input", () =>
-            this.processInput()
-          );
-          this.selectAllBtn.addEventListener("click", () => {
-            this.toggleSelectAll();
-            this.updateControlButtons();
-          });
-          this.copySelectedBtn.addEventListener("click", () =>
-            this.copySelected()
-          );
-          this.deleteSelectedBtn.addEventListener("click", () =>
-            this.deleteSelected()
-          );
-
-          // Drag and drop event
-          this.sortedList.addEventListener("dragover", (e) => {
-            e.preventDefault();
-            const draggingItem = this.sortedList.querySelector(".dragging");
-            const siblings = [
-              ...this.sortedList.querySelectorAll(".list-item:not(.dragging)"),
-            ];
-            const nextSibling = siblings.find((sibling) => {
-              const box = sibling.getBoundingClientRect();
-              return e.clientY <= box.top + box.height / 2;
-            });
-            if (nextSibling) {
-              this.sortedList.insertBefore(draggingItem, nextSibling);
-            } else {
-              this.sortedList.appendChild(draggingItem);
-            }
-          });
-        }
-
-        detectSeparator(text) {
-          if (this.customSeparator.value) return this.customSeparator.value;
-          if (text.includes("\n")) return "\n";
-          if (text.includes(",")) return ",";
-          if (text.includes(";")) return ";";
-          return "\n";
-        }
-
-        processInput() {
-          const text = this.input.value.trim();
-          const separator = this.detectSeparator(text);
-          this.items = text
-            .split(separator)
-            .map((item) => item.trim())
-            .filter((item) => item)
-            .sort((a, b) => a.localeCompare(b));
-          this.renderList();
-        }
-
-        renderList() {
-          this.sortedList.innerHTML = this.items
-            .map(
-              (item, index) => `
-            <div class="list-item" draggable="true" data-index="${index}">
-              <div class="checkbox-wrapper-30">
-                <span class="checkbox">
-                  <input type="checkbox" id="cbx-${index}" />
-                  <svg>
-                    <use xlink:href="#checkbox-30" class="checkbox"></use>
-                  </svg>
-                </span>
-              </div>
-              <span>${item}</span>
-              <button onclick="listSorter.removeItem(${index})" class="removeItem"><i class="ti ti-trash"></i></button>
-            </div>
-          `
-            )
-            .join("");
-
-          // Add event listeners for drag events and checkbox changes
-          this.sortedList.querySelectorAll(".list-item").forEach((item) => {
-            item.addEventListener("dragstart", () =>
-              item.classList.add("dragging")
-            );
-            item.addEventListener("dragend", () => {
-              item.classList.remove("dragging");
-              this.updateItemsOrder();
-            });
-          });
-
-          // Update the control buttons whenever a checkbox changes
-          this.sortedList
-            .querySelectorAll('input[type="checkbox"]')
-            .forEach((cb) => {
-              cb.addEventListener("change", () => this.updateControlButtons());
-            });
-          this.updateControlButtons();
-        }
-
-        removeItem(index) {
-          this.items.splice(index, 1);
-          this.renderList();
-        }
-
-        updateItemsOrder() {
-          this.items = [...this.sortedList.querySelectorAll(".list-item")].map(
-            (item) => item.querySelector("span:not(.checkbox)").textContent
-          );
-        }
-
-        toggleSelectAll() {
-          const checkboxes = this.sortedList.querySelectorAll(
-            'input[type="checkbox"]'
-          );
-          const allChecked = [...checkboxes].every((cb) => cb.checked);
-          checkboxes.forEach((cb) => (cb.checked = !allChecked));
-        }
-
-        updateControlButtons() {
-          const checkboxes = this.sortedList.querySelectorAll(
-            'input[type="checkbox"]'
-          );
-          const anySelected = Array.from(checkboxes).some((cb) => cb.checked);
-          if (anySelected) {
-            this.copySelectedBtn.classList.remove("disabled");
-            this.deleteSelectedBtn.classList.remove("disabled");
-          } else {
-            this.copySelectedBtn.classList.add("disabled");
-            this.deleteSelectedBtn.classList.add("disabled");
-          }
-        }
-
-        copySelected() {
-          const selectedItems = [
-            ...this.sortedList.querySelectorAll(".list-item"),
-          ]
-            .filter(
-              (item) => item.querySelector('input[type="checkbox"]').checked
-            )
-            .map(
-              (item) => item.querySelector("span:not(.checkbox)").textContent
-            );
-          if (selectedItems.length === 0) return;
-          navigator.clipboard
-            .writeText(selectedItems.join("\n"))
-            .then(() => this.showToast());
-        }
-
-        deleteSelected() {
-          const newItems = [...this.sortedList.querySelectorAll(".list-item")]
-            .filter(
-              (item) => !item.querySelector('input[type="checkbox"]').checked
-            )
-            .map(
-              (item) => item.querySelector("span:not(.checkbox)").textContent
-            );
-          this.items = newItems;
-          this.renderList();
-        }
-
-        showToast() {
-          this.toast.classList.add("show");
-          setTimeout(() => this.toast.classList.remove("show"), 2000);
-        }
-      }
-
-      const listSorter = new ListSorter();
-
-      // Help modal functionality
-      const helpIcon = document.getElementById("helpIcon");
-      const helpModal = document.getElementById("helpModal");
-      const modalClose = helpModal.querySelector(".close");
-
-      helpIcon.addEventListener("click", () => {
-        helpModal.style.display = "block";
-      });
-
-      modalClose.addEventListener("click", () => {
-        helpModal.style.display = "none";
-      });
-
-      window.addEventListener("click", (event) => {
-        if (event.target == helpModal) {
-          helpModal.style.display = "none";
-        }
-      });
-    </script>
-  </body>
 </html>

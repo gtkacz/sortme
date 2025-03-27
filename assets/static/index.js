@@ -273,20 +273,60 @@ const tooltipButtons = [
 	{ id: 'simpleicons', text: 'Simple Icons', direction: 'top' },
 ];
 
+// Create container for tooltips at the bottom of the body
+const tooltipContainer = document.createElement('div');
+tooltipContainer.id = 'tooltip-container';
+tooltipContainer.style.position = 'fixed';
+tooltipContainer.style.zIndex = '1000';
+tooltipContainer.style.pointerEvents = 'none';
+tooltipContainer.style.top = '0';
+tooltipContainer.style.left = '0';
+document.body.appendChild(tooltipContainer);
+
 tooltipButtons.forEach(btn => {
 	const element = document.getElementById(btn.id);
+	if (!element) return;
+	
+	// Create tooltip in the container
 	const tooltip = document.createElement('div');
 	tooltip.className = 'control-tooltip';
+	tooltip.id = `tooltip-${btn.id}`;
 	tooltip.textContent = btn.text;
-	tooltip.style.cssText = `
-		display: none;
-		position: absolute;
-		${btn.direction === 'top' ? 'bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);' : ''}
-		${btn.direction === 'left' ? 'right: calc(100% + 8px); top: 50%; transform: translateY(-50%);' : ''}
-		`;
-	element.appendChild(tooltip);
-	element.addEventListener('mouseenter', () => tooltip.style.display = 'block');
-	element.addEventListener('mouseleave', () => tooltip.style.display = 'none');
+	tooltip.style.display = 'none';
+	tooltip.style.position = 'absolute';
+	tooltip.style.width = btn.text.length * 12 + 'px'; // Roughly estimate the width
+	tooltipContainer.appendChild(tooltip);
+	
+	// Show/hide tooltip with proper positioning
+	element.addEventListener('mouseenter', () => {
+		tooltip.style.display = 'block';
+		// Get positioning after tooltip is visible to calculate its dimensions
+		setTimeout(() => {
+			const rect = element.getBoundingClientRect();
+		
+		if (btn.direction === 'top') {
+			tooltip.style.top = `${rect.top - tooltip.offsetHeight - 8}px`;
+			tooltip.style.left = `${rect.left + rect.width / 2}px`;
+			tooltip.style.transform = 'translateX(-50%)';
+		} else if (btn.direction === 'right') {
+			tooltip.style.top = `${rect.top + rect.height / 2}px`;
+			tooltip.style.left = `${rect.right + 8}px`;
+			tooltip.style.transform = 'translateY(-50%)';
+		} else if (btn.direction === 'bottom') {
+			tooltip.style.top = `${rect.bottom + 8}px`;
+			tooltip.style.left = `${rect.left + rect.width / 2}px`;
+			tooltip.style.transform = 'translateX(-50%)';
+		} else if (btn.direction === 'left') {
+			tooltip.style.top = `${rect.top + rect.height / 2}px`;
+			tooltip.style.left = `${rect.left - tooltip.offsetWidth - 8}px`;
+			tooltip.style.transform = 'translateY(-50%)';
+		}
+		}, 0);
+	});
+	
+	element.addEventListener('mouseleave', () => {
+		tooltip.style.display = 'none';
+	});
 });
 
 const separators = ['\n', ';', ','];

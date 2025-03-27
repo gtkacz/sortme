@@ -145,6 +145,7 @@ textarea,
 input {
 	font-family: "Space Grotesk", sans-serif !important;
 	transition: border-color 0.2s;
+	resize: none !important;
 }
 
 textarea,
@@ -556,34 +557,13 @@ hr {
 
 /* Tooltip styles */
 .control-tooltip {
-	font-family: "Space Grotesk", sans-serif !important;
-	font-style: normal;
-	font-optical-sizing: auto;
-	display: none;
-	position: absolute;
 	background-color: transparent;
 	backdrop-filter: blur(5px);
+	margin: 15% auto;
+	padding: 20px;
 	border: 1px solid var(--text-secondary);
-	color: var(--text-secondary);
-	padding: 1rem;
 	border-radius: 0.5rem;
-	font-size: 0.875rem;
-	white-space: nowrap;
-	bottom: calc(100% + 8px);
-	left: 50%;
-	transform: translateX(-50%);
-	border: 1px solid var(--text-secondary);
-	z-index: 100;
-	pointer-events: none;
-}
-
-.control-tooltip::after {
-	content: "";
-	position: absolute;
-	top: 100%;
-	left: 50%;
-	margin-left: -5px;
-	border: 1px solid var(--text-secondary);
+	color: var(--text-primary);
 }
 
 #selectAll:hover .control-tooltip,
@@ -728,4 +708,14 @@ hr {
 
 .copyright {
 	text-align: center;
+}
+
+#input::-webkit-scrollbar {
+	width: 5px;
+	background-color: var(--bg-secondary);
+}
+
+#input::-webkit-scrollbar-thumb {
+	border-radius: 10px;
+	background-color: var(--text-primary);
 }

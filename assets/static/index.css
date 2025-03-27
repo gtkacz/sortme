@@ -563,7 +563,7 @@ hr {
 	padding: 20px;
 	border: 1px solid var(--text-secondary);
 	border-radius: 0.5rem;
-	color: var(--text-primary);
+	color: var(--text-secondary);
 }
 
 #selectAll:hover .control-tooltip,

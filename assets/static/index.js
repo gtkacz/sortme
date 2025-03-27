@@ -329,54 +329,6 @@ tooltipButtons.forEach(btn => {
 	});
 });
 
-const separators = ['\n', ';', ','];
-let editingSeparators = false;
-
-document.getElementById('toggleSeparators').addEventListener('click', () => {
-	editingSeparators = !editingSeparators;
-	document.getElementById('separator-chips-container').style.display =
-		editingSeparators ? 'flex' : 'none';
-	document.getElementById('separator-input-wrapper').style.display =
-		editingSeparators ? 'flex' : 'none';
-	updateSeparatorsDisplay();
-});
-
-function updateSeparatorsDisplay() {
-	const container = document.getElementById('separator-chips-container');
-	container.innerHTML = '';
-	separators.forEach(sep => {
-		const chip = document.createElement('div');
-		chip.className = 'separator-chip';
-		chip.innerHTML = `
-		<span>${sep === '\n' ? '\\n' : sep}</span>
-		<button type="button" class="delete-separator">&times;</button>
-	  `;
-		chip.querySelector('button').addEventListener('click', () => {
-			separators.splice(separators.indexOf(sep), 1);
-			updateSeparatorsDisplay();
-		});
-		container.appendChild(chip);
-	});
-}
-
-document.getElementById('save-separators').addEventListener('click', () => {
-	const input = document.getElementById('separator-input');
-	if (input.value.trim()) {
-		separators.push(input.value.trim());
-		input.value = '';
-		updateSeparatorsDisplay();
-	}
-});
-
-document.getElementById('separator-input').addEventListener('keyup', (e) => {
-	if (e.key === 'Enter' || e.key === ',') {
-		document.getElementById('save-separators').click();
-	}
-});
-
-// Initialize separators
-updateSeparatorsDisplay();
-
 // First, include the sorting function
 function sortStringWithSteps(inputString) {
 	const chars = inputString.split('');
@@ -405,15 +357,45 @@ function sortStringWithSteps(inputString) {
 document.addEventListener('DOMContentLoaded', () => {
 	const waveText = document.querySelector('.wave-text');
 	let isAnimating = false;
+	let inactivityTimer = null;
+	let inactivityDelay = 10000; // Default 10 seconds
 
+	// Function to set custom inactivity delay
+	function setInactivityDelay(milliseconds) {
+		inactivityDelay = milliseconds;
+		resetInactivityTimer();
+	}
+	
+	// Expose the function globally
+	window.setInactivityDelay = setInactivityDelay;
+
+	// Reset and start inactivity timer
+	function resetInactivityTimer() {
+		clearTimeout(inactivityTimer);
+		inactivityTimer = setTimeout(() => {
+			if (!isAnimating) {
+				animateSorting();
+			}
+		}, inactivityDelay);
+	}
+
+	// Initialize the inactivity timer
+	resetInactivityTimer();
+
+	// Add event listeners to detect user activity
 	waveText.addEventListener('mouseenter', () => {
 		if (isAnimating) return;
-
 		animateSorting();
 	});
+	
+	// Reset timer on user interaction
+	document.addEventListener('mousemove', resetInactivityTimer);
+	document.addEventListener('click', resetInactivityTimer);
+	document.addEventListener('keypress', resetInactivityTimer);
 
 	function animateSorting() {
 		isAnimating = true;
+		clearTimeout(inactivityTimer); // Clear timer during animation
 
 		// Extract text from spans
 		const spans = waveText.querySelectorAll('span');
@@ -442,6 +424,7 @@ document.addEventListener('DOMContentLoaded', () => {
 						if (reverseIndex < 0) {
 							clearInterval(backwardInterval);
 							isAnimating = false;
+							resetInactivityTimer(); // Restart inactivity timer after animation completes
 							return;
 						}
 

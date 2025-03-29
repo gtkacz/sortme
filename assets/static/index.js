@@ -153,7 +153,7 @@ class ListSorter {
 		this.selectAllBtn.textContent = allChecked ? "Unselect All" : "Select All";
 		this.selectAllBtn.classList.toggle("disabled", this.items.length === 0);
 
-		this.resetListBtn.classList.toggle("disabled", this.items.length === 0);
+		this.resetListBtn.classList.toggle("disabled", (this.items.length === 0 && !this.input));
 
 		this.shareBtn.disabled = !(
 			this.items.length > 0 || this.customSeparator.value
@@ -288,7 +288,7 @@ document.body.appendChild(tooltipContainer);
 tooltipButtons.forEach(btn => {
 	const element = document.getElementById(btn.id);
 	if (!element) return;
-	
+
 	// Create tooltip in the container
 	const tooltip = document.createElement('div');
 	tooltip.className = 'control-tooltip';
@@ -298,34 +298,34 @@ tooltipButtons.forEach(btn => {
 	tooltip.style.position = 'absolute';
 	tooltip.style.width = btn.text.length * 12 + 'px'; // Roughly estimate the width
 	tooltipContainer.appendChild(tooltip);
-	
+
 	// Show/hide tooltip with proper positioning
 	element.addEventListener('mouseenter', () => {
 		tooltip.style.display = 'block';
 		// Get positioning after tooltip is visible to calculate its dimensions
 		setTimeout(() => {
 			const rect = element.getBoundingClientRect();
-		
-		if (btn.direction === 'top') {
-			tooltip.style.top = `${rect.top - tooltip.offsetHeight - 8}px`;
-			tooltip.style.left = `${rect.left + rect.width / 2}px`;
-			tooltip.style.transform = 'translateX(-50%)';
-		} else if (btn.direction === 'right') {
-			tooltip.style.top = `${rect.top + rect.height / 2}px`;
-			tooltip.style.left = `${rect.right + 8}px`;
-			tooltip.style.transform = 'translateY(-50%)';
-		} else if (btn.direction === 'bottom') {
-			tooltip.style.top = `${rect.bottom + 8}px`;
-			tooltip.style.left = `${rect.left + rect.width / 2}px`;
-			tooltip.style.transform = 'translateX(-50%)';
-		} else if (btn.direction === 'left') {
-			tooltip.style.top = `${rect.top + rect.height / 2}px`;
-			tooltip.style.left = `${rect.left - tooltip.offsetWidth - 8}px`;
-			tooltip.style.transform = 'translateY(-50%)';
-		}
+
+			if (btn.direction === 'top') {
+				tooltip.style.top = `${rect.top - tooltip.offsetHeight - 8}px`;
+				tooltip.style.left = `${rect.left + rect.width / 2}px`;
+				tooltip.style.transform = 'translateX(-50%)';
+			} else if (btn.direction === 'right') {
+				tooltip.style.top = `${rect.top + rect.height / 2}px`;
+				tooltip.style.left = `${rect.right + 8}px`;
+				tooltip.style.transform = 'translateY(-50%)';
+			} else if (btn.direction === 'bottom') {
+				tooltip.style.top = `${rect.bottom + 8}px`;
+				tooltip.style.left = `${rect.left + rect.width / 2}px`;
+				tooltip.style.transform = 'translateX(-50%)';
+			} else if (btn.direction === 'left') {
+				tooltip.style.top = `${rect.top + rect.height / 2}px`;
+				tooltip.style.left = `${rect.left - tooltip.offsetWidth - 8}px`;
+				tooltip.style.transform = 'translateY(-50%)';
+			}
 		}, 0);
 	});
-	
+
 	element.addEventListener('mouseleave', () => {
 		tooltip.style.display = 'none';
 	});
@@ -370,7 +370,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		inactivityDelay = milliseconds;
 		resetInactivityTimer();
 	}
-	
+
 	// Expose the function globally
 	window.setInactivityDelay = setInactivityDelay;
 
@@ -392,7 +392,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		if (isAnimating) return;
 		animateSorting();
 	});
-	
+
 	// Reset timer on user interaction
 	document.addEventListener('mousemove', resetInactivityTimer);
 	document.addEventListener('click', resetInactivityTimer);
@@ -426,12 +426,12 @@ document.addEventListener('DOMContentLoaded', () => {
 				clearInterval(forwardInterval);
 
 				// Wait 10 seconds before reversing
-				
+
 				// Reset all brightness during waiting period
 				spans.forEach(span => {
 					span.style.filter = 'brightness(100%)';
 				});
-				
+
 				setTimeout(() => {
 					// Animate backward
 					let reverseIndex = totalSteps - 2; // Start from the second-to-last step
@@ -441,7 +441,7 @@ document.addEventListener('DOMContentLoaded', () => {
 							clearInterval(backwardInterval);
 							isAnimating = false;
 							resetInactivityTimer(); // Restart inactivity timer after animation completes
-							
+
 							// Reset all spans to normal brightness
 							spans.forEach(span => {
 								span.style.filter = 'brightness(100%)';
@@ -507,7 +507,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			stepIndex++;
 		}, 500); // Adjust speed as needed
 	}
-	
+
 	// Add CSS for transition to the page
 	const style = document.createElement('style');
 	style.textContent = `

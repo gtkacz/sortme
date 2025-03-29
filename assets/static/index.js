@@ -202,12 +202,14 @@ class ListSorter {
 	}
 
 	copySelected() {
+		const text = this.input.value.trim();
+		const separator = this.detectSeparator(text);
 		const selectedItems = [...this.sortedList.querySelectorAll(".list-item")]
 			.filter((item) => item.querySelector('input[type="checkbox"]').checked)
 			.map((item) => item.querySelector("span:not(.checkbox)").textContent);
 		if (selectedItems.length === 0) return;
 		navigator.clipboard
-			.writeText(selectedItems.join(","))
+			.writeText(selectedItems.join(separator))
 			.then(() => this.showToast("Copied to clipboard!"));
 	}
 
@@ -333,8 +335,10 @@ tooltipButtons.forEach(btn => {
 function sortStringWithSteps(inputString) {
 	const chars = inputString.split('');
 	const steps = [];
+	const swapIndices = []; // Track which indices were swapped in each step
 
 	steps.push([...chars]);
+	swapIndices.push([]); // No swaps for initial state
 
 	for (let i = 0; i < chars.length; i++) {
 		let swapped = false;
@@ -344,13 +348,14 @@ function sortStringWithSteps(inputString) {
 				[chars[j], chars[j + 1]] = [chars[j + 1], chars[j]];
 				swapped = true;
 				steps.push([...chars]);
+				swapIndices.push([j, j + 1]); // Store the indices that were swapped
 			}
 		}
 
 		if (!swapped) break;
 	}
 
-	return steps;
+	return { steps, swapIndices };
 }
 
 // Animation controller
@@ -405,9 +410,14 @@ document.addEventListener('DOMContentLoaded', () => {
 			originalText += span.textContent;
 		});
 
-		// Get sorting steps
-		const sortingSteps = sortStringWithSteps(originalText);
+		// Get sorting steps and swap indices
+		const { steps: sortingSteps, swapIndices } = sortStringWithSteps(originalText);
 		const totalSteps = sortingSteps.length;
+
+		// Reset all spans to normal brightness
+		spans.forEach(span => {
+			span.style.filter = 'brightness(100%)';
+		});
 
 		// Animate forward
 		let stepIndex = 0;
@@ -416,6 +426,12 @@ document.addEventListener('DOMContentLoaded', () => {
 				clearInterval(forwardInterval);
 
 				// Wait 10 seconds before reversing
+				
+				// Reset all brightness during waiting period
+				spans.forEach(span => {
+					span.style.filter = 'brightness(100%)';
+				});
+				
 				setTimeout(() => {
 					// Animate backward
 					let reverseIndex = totalSteps - 2; // Start from the second-to-last step
@@ -425,8 +441,18 @@ document.addEventListener('DOMContentLoaded', () => {
 							clearInterval(backwardInterval);
 							isAnimating = false;
 							resetInactivityTimer(); // Restart inactivity timer after animation completes
+							
+							// Reset all spans to normal brightness
+							spans.forEach(span => {
+								span.style.filter = 'brightness(100%)';
+							});
 							return;
 						}
+
+						// Reset all spans to normal brightness
+						spans.forEach(span => {
+							span.style.filter = 'brightness(100%)';
+						});
 
 						// Update spans with characters from current step
 						spans.forEach((span, i) => {
@@ -434,6 +460,18 @@ document.addEventListener('DOMContentLoaded', () => {
 								span.textContent = sortingSteps[reverseIndex][i];
 							}
 						});
+
+						// Highlight swapped letters in reverse animation
+						// For reverse animation, we need to check the next step's swap indices
+						if (reverseIndex + 1 < swapIndices.length) {
+							const swappedIndices = swapIndices[reverseIndex + 1];
+							swappedIndices.forEach(index => {
+								if (index < spans.length) {
+									spans[index].style.filter = 'brightness(115%)';
+									spans[index].style.transition = 'filter 0.1s ease-in-out';
+								}
+							});
+						}
 
 						reverseIndex--;
 					}, 500); // Adjust speed as needed
@@ -443,6 +481,11 @@ document.addEventListener('DOMContentLoaded', () => {
 				return;
 			}
 
+			// Reset all spans to normal brightness
+			spans.forEach(span => {
+				span.style.filter = 'brightness(100%)';
+			});
+
 			// Update spans with characters from current step
 			spans.forEach((span, i) => {
 				if (i < sortingSteps[stepIndex].length) {
@@ -450,7 +493,27 @@ document.addEventListener('DOMContentLoaded', () => {
 				}
 			});
 
+			// Highlight swapped letters
+			if (stepIndex > 0) { // Skip the first step as it has no swaps
+				const swappedIndices = swapIndices[stepIndex];
+				swappedIndices.forEach(index => {
+					if (index < spans.length) {
+						spans[index].style.filter = 'brightness(115%)';
+						spans[index].style.transition = 'filter 0.1s ease-in-out';
+					}
+				});
+			}
+
 			stepIndex++;
 		}, 500); // Adjust speed as needed
 	}
+	
+	// Add CSS for transition to the page
+	const style = document.createElement('style');
+	style.textContent = `
+		.wave-text span {
+			transition: filter 0.2s ease-in-out;
+		}
+	`;
+	document.head.appendChild(style);
 });
